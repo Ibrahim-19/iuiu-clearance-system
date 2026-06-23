@@ -28,16 +28,16 @@ def gmail_only_validator(form, field):
 
 
 class RegistrationForm(FlaskForm):
-    name = StringField("Full Name", validators=[DataRequired(), Length(min=2, max=120)])
+    name = StringField("Full Name*", validators=[DataRequired(), Length(min=2, max=120)])
     email = StringField(
-        "Gmail Address", validators=[DataRequired(), Email(), gmail_only_validator, Length(max=120)]
+        "Gmail Address*", validators=[DataRequired(), Email(), gmail_only_validator, Length(max=120)]
     )
     reg_number = StringField(
-        "Registration Number", validators=[DataRequired(), reg_number_validator],
+        "Registration Number*", validators=[DataRequired(), reg_number_validator],
         render_kw={"placeholder": "e.g. 220-067432-19874"}
     )
     course_type = SelectField(
-        "Programme Type",
+        "Programme Type*",
         choices=[
             ("certificate", "Certificate"),
             ("diploma", "Diploma"),
@@ -46,21 +46,21 @@ class RegistrationForm(FlaskForm):
         ],
         validators=[DataRequired()],
     )
-    course_name = StringField("Course / Programme Name", validators=[DataRequired(), Length(max=150)])
+    course_name = StringField("Course / Programme Name*", validators=[DataRequired(), Length(max=150)])
     admission_year = IntegerField(
-        "Year of Admission", validators=[DataRequired(), NumberRange(min=2000, max=2100)]
+        "Year of Admission*", validators=[DataRequired(), NumberRange(min=2000, max=2100)]
     )
-    phone = StringField("Phone Number", validators=[Optional(), Length(max=20)])
-    password = PasswordField("Password", validators=[DataRequired(), Length(min=6)])
+    phone = StringField("Phone Number*", validators=[Optional(), Length(max=20)])
+    password = PasswordField("Password*", validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField(
-        "Confirm Password", validators=[DataRequired(), EqualTo("password", message="Passwords must match.")]
+        "Confirm Password*", validators=[DataRequired(), EqualTo("password", message="Passwords must match.")]
     )
     submit = SubmitField("Create Account")
 
 
 class LoginForm(FlaskForm):
-    email = StringField("Email", validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired()])
+    email = StringField("Email*", validators=[DataRequired(), Email()])
+    password = PasswordField("Password*", validators=[DataRequired()])
     remember = BooleanField("Remember me")
     submit = SubmitField("Log In")
 

@@ -117,4 +117,4 @@ class Config:
         },
     }
 
-    SITE_NAME = "IUIU Arua Campus Online Clearance System"
+    SITE_NAME = "IUIU Arua Campus Online Clearance System for graduating students"
