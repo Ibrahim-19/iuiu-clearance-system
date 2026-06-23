@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Graduation List{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Master Graduation List</h1>
+  <p>All registered students and their overall clearance status.</p>
+</div>
+
+<form class="search-bar" method="GET">
+  <input type="text" name="q" class="form-control" placeholder="Search by name or reg number..." value="{{ q }}">
+  <select name="status" class="form-control">
+    <option value="">All Statuses</option>
+    <option value="not_started" {{ 'selected' if status == 'not_started' }}>Not Started</option>
+    <option value="draft" {{ 'selected' if status == 'draft' }}>Draft</option>
+    <option value="submitted" {{ 'selected' if status == 'submitted' }}>Submitted</option>
+    <option value="fully_cleared" {{ 'selected' if status == 'fully_cleared' }}>Fully Cleared</option>
+  </select>
+  <button class="btn btn-primary" type="submit">Filter</button>
+</form>
+
+<div class="card table-wrap">
+  <table>
+    <thead><tr><th>Name</th><th>Reg No.</th><th>Course</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.student.name }}</td>
+        <td>{{ row.student.reg_number }}</td>
+        <td>{{ row.student.course_name }}</td>
+        <td><span class="badge badge-{{ row.status }}">{{ row.status.replace('_',' ') }}</span></td>
+        <td><a class="btn btn-outline btn-sm" href="{{ url_for('registrar.student_detail', student_id=row.student.id) }}">View</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5"><div class="empty-state">No students match your filters.</div></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

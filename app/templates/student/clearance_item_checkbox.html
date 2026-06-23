@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Confirm Clearance — {{ item.department.name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>{{ item.department.name }}</h1>
+  <p>{{ item.department.description }}</p>
+</div>
+
+<div class="card">
+  <div class="alert alert-success">Good news — our records show no pending {{ exc_config.noun.lower() }} with this office.</div>
+  <form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="checkbox-row form-group">
+      {{ form.confirm() }} {{ form.confirm.label }}
+    </div>
+    {% for e in form.confirm.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+    <div style="display:flex;gap:10px;">
+      {{ form.submit(class="btn btn-primary") }}
+      <a class="btn btn-outline" href="{{ url_for('student.dashboard') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

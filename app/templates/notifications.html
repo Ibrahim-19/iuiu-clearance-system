@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<div class="page-header flex-between">
+  <div>
+    <h1>Notifications</h1>
+    <p>Stay up to date with your clearance progress.</p>
+  </div>
+  <button class="btn btn-outline btn-sm" id="markAllRead">Mark all as read</button>
+</div>
+
+<div class="card">
+  {% if notifications %}
+    {% for n in notifications %}
+      <div class="notif-item {{ '' if n.is_read else 'unread' }}" data-id="{{ n.id }}">
+        {% if not n.is_read %}<span class="notif-dot"></span>{% else %}<span style="width:8px;display:inline-block;"></span>{% endif %}
+        <div style="flex:1;">
+          <div class="notif-msg">
+            {% if n.link %}<a href="{{ n.link }}">{{ n.message }}</a>{% else %}{{ n.message }}{% endif %}
+          </div>
+          <div class="notif-time">{{ n.created_at.strftime('%d %b %Y, %H:%M') }}</div>
+        </div>
+        {% if not n.is_read %}
+          <span class="btn btn-outline btn-sm notif-mark-read" data-id="{{ n.id }}">Mark read</span>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">No notifications yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

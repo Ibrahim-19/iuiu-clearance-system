@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — {{ site_name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/fontawesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/solid.min.css') }}">
+</head>
+<body>
+  <div class="auth-wrap" style="flex:1;">
+    <div class="auth-card" style="max-width:560px;">
+      <h1>Create Your Account</h1>
+      <div class="sub">Only finalists on the active graduation cohort list can register</div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+          {{ form.name.label }}
+          {{ form.name(class="form-control") }}
+          {% for e in form.name.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.email.label }}
+          {{ form.email(class="form-control", placeholder="you@gmail.com") }}
+          <div class="form-text">Gmail addresses only.</div>
+          {% for e in form.email.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.reg_number.label }}
+          {{ form.reg_number(class="form-control") }}
+          <div class="form-text">Format: xxx-xxxxxx-xxxxx</div>
+          {% for e in form.reg_number.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            {{ form.course_type.label }}
+            {{ form.course_type(class="form-control") }}
+          </div>
+          <div class="form-group">
+            {{ form.admission_year.label }}
+            {{ form.admission_year(class="form-control") }}
+            {% for e in form.admission_year.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+          </div>
+        </div>
+        <div class="form-group">
+          {{ form.course_name.label }}
+          {{ form.course_name(class="form-control", placeholder="e.g. Bachelor of Science in IT") }}
+          {% for e in form.course_name.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.phone.label }}
+          {{ form.phone(class="form-control") }}
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            {{ form.password.label }}
+            <div class="pw-wrap">
+              {{ form.password(class="form-control", id="password") }}
+              <i class="fa-solid fa-eye pw-eye" data-target="password"></i>
+            </div>
+            {% for e in form.password.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+          </div>
+          <div class="form-group">
+            {{ form.confirm_password.label }}
+            <div class="pw-wrap">
+              {{ form.confirm_password(class="form-control", id="confirm_password") }}
+              <i class="fa-solid fa-eye pw-eye" data-target="confirm_password"></i>
+            </div>
+            {% for e in form.confirm_password.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+          </div>
+        </div>
+        {{ form.submit(class="btn btn-primary btn-block") }}
+      </form>
+
+      <div class="auth-foot">
+        Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    &copy; {{ current_year }} IUIU Arua Campus Online Clearance System. All rights reserved.
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

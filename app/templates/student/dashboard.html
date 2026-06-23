@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}My Clearance{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Welcome, {{ current_user.name.split(' ')[0] }} <i class="fa-solid fa-hand"></i></h1>
+  <p>Reg No: {{ current_user.reg_number }} &middot; {{ current_user.course_name }}
+    {% if expected_grad_year %} &middot; Expected Graduation Year: {{ expected_grad_year }}{% endif %}
+  </p>
+</div>
+
+<div class="card">
+  <div class="flex-between">
+    <div>
+      <strong>Tracking Reference:</strong> {{ request_obj.tracking_code }}
+      <span class="badge badge-{{ request_obj.status }}">{{ request_obj.status.replace('_',' ') }}</span>
+    </div>
+    {% if request_obj.status == 'fully_cleared' %}
+      <a class="btn btn-success btn-sm" href="{{ url_for('student.certificate', request_id=request_obj.id) }}"><i class="fa-solid fa-graduation-cap"></i> View Certificate</a>
+    {% endif %}
+  </div>
+  <div class="progress-track"><div class="progress-fill" style="width:{{ request_obj.progress_percent }}%;"></div></div>
+  <div class="form-text">{{ request_obj.progress_percent }}% cleared ({{ items|selectattr('status','equalto','approved')|list|length }} of {{ items|length }} offices)</div>
+</div>
+
+<div class="page-header">
+  <h1 style="font-size:18px;">Clearance Checklist</h1>
+  <p>Complete each office below. Offices with an outstanding balance require a payment receipt; others only need confirmation.</p>
+</div>
+
+{% for item in items %}
+  <div class="dept-item">
+    <div>
+      <div class="dept-name">{{ item.department.name }}</div>
+      <div class="dept-desc">{{ item.department.description }}</div>
+      {% if item.status == 'rejected' and item.rejection_reason %}
+        <div class="form-error">Rejected: {{ item.rejection_reason }}</div>
+      {% endif %}
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="badge badge-{{ item.status }}">{{ item.status.replace('_',' ') }}</span>
+      {% if item.status in ['not_submitted', 'rejected'] and request_obj.status != 'fully_cleared' %}
+        <a class="btn btn-primary btn-sm" href="{{ url_for('student.clearance_item', item_id=item.id) }}">
+          {{ 'Resubmit' if item.status == 'rejected' else (item.has_debt and 'Upload Receipt' or 'Confirm') }}
+        </a>
+      {% elif item.status == 'pending' %}
+        <span class="form-text">Awaiting review</span>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+{% endblock %}

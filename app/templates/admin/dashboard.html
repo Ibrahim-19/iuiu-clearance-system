@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{ current_user.department.name }} Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>{{ current_user.department.name }}</h1>
+  <p>{{ current_user.department.description }}</p>
+</div>
+
+<div class="grid grid-3">
+  <div class="card stat-card"><div class="stat-value">{{ total }}</div><div class="stat-label">Total Submissions</div></div>
+  <div class="card stat-card"><div class="stat-value">{{ pending }}</div><div class="stat-label"><i class="fa-solid fa-hourglass-half"></i> Pending Review</div></div>
+  <div class="card stat-card"><div class="stat-value">{{ approved }}</div><div class="stat-label"><i class="fa-solid fa-circle-check"></i> Approved</div></div>
+  <div class="card stat-card"><div class="stat-value">{{ rejected }}</div><div class="stat-label"><i class="fa-solid fa-circle-xmark"></i> Rejected</div></div>
+  <div class="card stat-card"><div class="stat-value">{{ debts_open }}</div><div class="stat-label"><i class="fa-solid fa-clipboard-list"></i> Open {{ exc_config.noun }} Records</div></div>
+</div>
+
+<div class="card">
+  <div class="flex-between">
+    <h3 style="margin:0;">Quick Actions</h3>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+    <a class="btn btn-primary" href="{{ url_for('admin.queue') }}"><i class="fa-solid fa-clipboard-list"></i> Open Review Queue</a>
+    <a class="btn btn-outline" href="{{ url_for('admin.debts') }}"><i class="fa-solid fa-clipboard-list"></i> Manage Exceptions Ledger</a>
+  </div>
+</div>
+{% endblock %}

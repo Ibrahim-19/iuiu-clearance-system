@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Review Submission{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Review Submission</h1>
+  <p>{{ item.request.student.name }} &middot; {{ item.request.student.reg_number }}</p>
+</div>
+
+<div class="card">
+  <div class="flex-between">
+    <div><strong>Status:</strong> <span class="badge badge-{{ item.status }}">{{ item.status.replace('_',' ') }}</span></div>
+    <div>Submitted: {{ item.submitted_at.strftime('%d %b %Y, %H:%M') if item.submitted_at else '—' }}</div>
+  </div>
+
+  <hr style="border:none;border-top:1px solid #e2e6ec;margin:16px 0;">
+
+  {% if item.has_debt %}
+    <h3 style="margin-top:0;">Uploaded Receipt</h3>
+    {% if item.receipt_filename %}
+      {% set ext = item.receipt_filename.rsplit('.',1)[1].lower() %}
+      {% if ext in ['jpg','jpeg','png'] %}
+        <img src="{{ url_for('admin.view_receipt', item_id=item.id) }}" style="max-width:100%;border-radius:8px;border:1px solid #e2e6ec;">
+      {% else %}
+        <a class="btn btn-outline" href="{{ url_for('admin.view_receipt', item_id=item.id) }}" target="_blank"><i class="fa-solid fa-file-pdf"></i> Open PDF Receipt</a>
+      {% endif %}
+    {% else %}
+      <p class="form-text">No receipt uploaded yet.</p>
+    {% endif %}
+  {% else %}
+    <h3 style="margin-top:0;">Checkbox Confirmation</h3>
+    <p>Student confirmed: <strong>{{ 'Yes' if item.checkbox_confirmed else 'No' }}</strong> — no outstanding obligations.</p>
+  {% endif %}
+
+  {% if item.status == 'pending' %}
+    <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;">
+      <form method="POST" action="{{ url_for('admin.approve_item', item_id=item.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-success" type="submit"><i class="fa-solid fa-circle-check"></i> Verify &amp; Approve</button>
+      </form>
+      <button class="btn btn-danger" type="button" onclick="document.getElementById('rejectBox').style.display='block'"><i class="fa-solid fa-circle-xmark"></i> Reject</button>
+    </div>
+
+    <div id="rejectBox" style="display:none;margin-top:16px;">
+      <form method="POST" action="{{ url_for('admin.reject_item', item_id=item.id) }}">
+        {{ reject_form.hidden_tag() }}
+        <div class="form-group">
+          {{ reject_form.reason.label }}
+          {{ reject_form.reason(class="form-control", rows="3") }}
+          {% for e in reject_form.reason.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+        </div>
+        {{ reject_form.submit(class="btn btn-danger") }}
+      </form>
+    </div>
+  {% elif item.status == 'rejected' %}
+    <div class="alert alert-danger" style="margin-top:16px;">Rejected: {{ item.rejection_reason }}</div>
+  {% endif %}
+</div>
+
+<a class="btn btn-outline" href="{{ url_for('admin.queue') }}"><i class="fa-solid fa-arrow-left"></i> Back to Queue</a>
+{% endblock %}

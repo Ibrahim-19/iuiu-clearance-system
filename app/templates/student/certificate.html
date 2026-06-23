@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Clearance Certificate{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1><i class="fa-solid fa-graduation-cap"></i> Clearance Certificate</h1>
+  <p>Congratulations — you have been fully cleared for graduation by all 5 offices.</p>
+</div>
+
+<div class="cert-preview">
+  <div style="font-size:48px;"><i class="fa-solid fa-scroll"></i></div>
+  <h2 style="margin:10px 0 4px;">{{ current_user.name }}</h2>
+  <p style="color:#5b6473;margin:0 0 4px;">{{ current_user.reg_number }} &middot; {{ current_user.course_name }}</p>
+  <p style="color:#5b6473;margin:0 0 16px;">Tracking Reference: {{ request_obj.tracking_code }}</p>
+  <a class="btn btn-success" href="{{ url_for('student.download_certificate', request_id=request_obj.id) }}"><i class="fa-solid fa-download"></i> Download Certificate PDF</a>
+</div>
+
+<div class="card" style="margin-top:20px;">
+  <h3 style="margin-top:0;">About Your Certificate</h3>
+  <p class="form-text">
+    Your certificate includes a unique QR code. Anyone — including a future employer — can scan it to
+    instantly verify on this system that your clearance is genuine and was not altered.
+  </p>
+</div>
+{% endblock %}

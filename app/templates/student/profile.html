@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>My Profile</h1>
+  <p>Update your personal details. Your registration number and email cannot be changed.</p>
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3 style="margin-top:0;">Profile Details</h3>
+    <form method="POST" enctype="multipart/form-data" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="form-group">
+        <label>Registration Number</label>
+        <input class="form-control" value="{{ current_user.reg_number }}" disabled>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input class="form-control" value="{{ current_user.email }}" disabled>
+      </div>
+      <div class="form-group">
+        {{ form.name.label }}
+        {{ form.name(class="form-control") }}
+        {% for e in form.name.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-group">
+        {{ form.phone.label }}
+        {{ form.phone(class="form-control") }}
+      </div>
+      <div class="form-group">
+        {{ form.profile_photo.label }}
+        {{ form.profile_photo(class="form-control") }}
+        {% for e in form.profile_photo.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      {{ form.submit(class="btn btn-primary") }}
+    </form>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Change Password</h3>
+    <form method="POST" action="{{ url_for('student.change_password') }}" novalidate>
+      {{ pwd_form.hidden_tag() }}
+      <div class="form-group">
+        {{ pwd_form.current_password.label }}
+        <div class="pw-wrap">
+          {{ pwd_form.current_password(class="form-control", id="current_password") }}
+          <i class="fa-solid fa-eye pw-eye" data-target="current_password"></i>
+        </div>
+      </div>
+      <div class="form-group">
+        {{ pwd_form.new_password.label }}
+        <div class="pw-wrap">
+          {{ pwd_form.new_password(class="form-control", id="new_password") }}
+          <i class="fa-solid fa-eye pw-eye" data-target="new_password"></i>
+        </div>
+      </div>
+      <div class="form-group">
+        {{ pwd_form.confirm_new_password.label }}
+        <div class="pw-wrap">
+          {{ pwd_form.confirm_new_password(class="form-control", id="confirm_new_password") }}
+          <i class="fa-solid fa-eye pw-eye" data-target="confirm_new_password"></i>
+        </div>
+      </div>
+      {{ pwd_form.submit(class="btn btn-outline") }}
+    </form>
+  </div>
+</div>
+{% endblock %}

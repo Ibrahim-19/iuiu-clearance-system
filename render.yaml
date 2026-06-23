@@ -1,0 +1,35 @@
+# Optional: Render "Blueprint" file. If you connect this repo on Render and
+# it detects this file, it can provision the web service + database
+# together automatically instead of you clicking through each step
+# manually. The step-by-step manual instructions in README.md work fine
+# too — this is just a shortcut for next time.
+databases:
+  - name: iuiu-clearance-db
+    plan: free
+    databaseName: iuiu_clearance
+    user: iuiu_clearance
+
+services:
+  - type: web
+    name: iuiu-clearance
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: iuiu-clearance-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CURRENT_ACADEMIC_YEAR
+        value: "2026"
+      - key: MAIL_SUPPRESS_SEND
+        value: "1"
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ site_name }}{% endblock %}</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/fontawesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/solid.min.css') }}">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="{{ url_for('main.index') }}" class="brand">IUIU ARUA CAMPUS<small>Online Clearance System</small></a>
+    </div>
+    <div class="topbar-right">
+      {% if current_user_obj.is_authenticated %}
+      <a href="{{ url_for('main.notifications') }}" class="bell-wrap" style="color:#fff;">
+        <i class="fa-solid fa-bell"></i>
+        <span class="bell-badge" id="bellBadge" style="display:none;">0</span>
+      </a>
+      <div class="avatar-circle" title="{{ current_user_obj.name }}">
+        {{ current_user_obj.name[0]|upper }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="layout">
+    {% if current_user_obj.is_authenticated %}
+    <div class="overlay" id="overlay"></div>
+    <aside class="sidebar" id="sidebar">
+      {% if current_user_obj.is_student %}
+        <a href="{{ url_for('student.dashboard') }}" class="{{ 'active' if request.endpoint == 'student.dashboard' }}"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="{{ url_for('student.profile') }}" class="{{ 'active' if request.endpoint == 'student.profile' }}"><i class="fa-solid fa-user"></i> My Profile</a>
+        <a href="{{ url_for('main.notifications') }}" class="{{ 'active' if request.endpoint == 'main.notifications' }}"><i class="fa-solid fa-bell"></i> Notifications</a>
+        <div class="section-label">Account</div>
+        <a href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
+      {% elif current_user_obj.is_admin %}
+        <div class="section-label">{{ current_user_obj.department.name }}</div>
+        <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint == 'admin.dashboard' }}"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="{{ url_for('admin.queue') }}" class="{{ 'active' if request.endpoint == 'admin.queue' }}"><i class="fa-solid fa-clipboard-list"></i> Review Queue</a>
+        <a href="{{ url_for('admin.debts') }}" class="{{ 'active' if request.endpoint == 'admin.debts' }}"><i class="fa-solid fa-clipboard-list"></i> Exceptions Ledger</a>
+        <a href="{{ url_for('main.notifications') }}" class="{{ 'active' if request.endpoint == 'main.notifications' }}"><i class="fa-solid fa-bell"></i> Notifications</a>
+        <div class="section-label">Account</div>
+        <a href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
+      {% elif current_user_obj.is_registrar %}
+        <div class="section-label">Registrar / Super Admin</div>
+        <a href="{{ url_for('registrar.dashboard') }}" class="{{ 'active' if request.endpoint == 'registrar.dashboard' }}"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="{{ url_for('registrar.students') }}" class="{{ 'active' if request.endpoint in ['registrar.students','registrar.student_detail'] }}"><i class="fa-solid fa-graduation-cap"></i> Graduation List</a>
+        <a href="{{ url_for('registrar.finalists') }}" class="{{ 'active' if request.endpoint == 'registrar.finalists' }}"><i class="fa-solid fa-circle-check"></i> Finalist Whitelist</a>
+        <a href="{{ url_for('registrar.debts_overview') }}" class="{{ 'active' if request.endpoint == 'registrar.debts_overview' }}"><i class="fa-solid fa-clipboard-list"></i> Exceptions Ledger (All)</a>
+        <a href="{{ url_for('registrar.staff') }}" class="{{ 'active' if request.endpoint == 'registrar.staff' }}"><i class="fa-solid fa-user-tie"></i> Department Admins</a>
+        <a href="{{ url_for('registrar.departments') }}" class="{{ 'active' if request.endpoint == 'registrar.departments' }}"><i class="fa-solid fa-building"></i> Departments</a>
+        <a href="{{ url_for('main.notifications') }}" class="{{ 'active' if request.endpoint == 'main.notifications' }}"><i class="fa-solid fa-bell"></i> Notifications</a>
+        <div class="section-label">Account</div>
+        <a href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
+      {% endif %}
+    </aside>
+    {% endif %}
+
+    <main class="content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" data-autodismiss>{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    &copy; {{ current_year }} IUIU Arua Campus Online Clearance System. All rights reserved.
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

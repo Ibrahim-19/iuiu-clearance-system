@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Department Admins{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Department Admin Accounts</h1>
+  <p>Create login accounts for each of the 5 campus clearance offices.</p>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0;">Create Department Admin</h3>
+  <form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="grid grid-2">
+      <div class="form-group">
+        {{ form.name.label }}
+        {{ form.name(class="form-control") }}
+        {% for e in form.name.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-group">
+        {{ form.email.label }}
+        {{ form.email(class="form-control", placeholder="staffname@gmail.com") }}
+        <div class="form-text">Gmail addresses only.</div>
+        {% for e in form.email.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+    </div>
+    <div class="grid grid-2">
+      <div class="form-group">
+        {{ form.department_id.label }}
+        {{ form.department_id(class="form-control") }}
+      </div>
+      <div class="form-group">
+        {{ form.password.label }}
+        <div class="pw-wrap">
+          {{ form.password(class="form-control", id="password") }}
+          <i class="fa-solid fa-eye pw-eye" data-target="password"></i>
+        </div>
+        {% for e in form.password.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+  </form>
+</div>
+
+<input type="text" id="liveSearch" class="form-control" placeholder="Search admins..." style="margin-bottom:14px;">
+
+<div class="card table-wrap">
+  <table>
+    <thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for a in admins %}
+      <tr data-search-row>
+        <td>{{ a.name }}</td>
+        <td>{{ a.email }}</td>
+        <td>{{ a.department.name }}</td>
+        <td><span class="badge {{ 'badge-approved' if a.is_active_account else 'badge-rejected' }}">{{ 'Active' if a.is_active_account else 'Deactivated' }}</span></td>
+        <td>
+          <form method="POST" action="{{ url_for('registrar.deactivate_staff', user_id=a.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-outline btn-sm" type="submit">{{ 'Deactivate' if a.is_active_account else 'Activate' }}</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5"><div class="empty-state">No department admins yet.</div></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Upload Receipt — {{ item.department.name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>{{ item.department.name }}</h1>
+  <p>{{ item.department.description }}</p>
+</div>
+
+<div class="card">
+  <div class="alert alert-warning">Our records show a pending <strong>{{ exc_config.noun.lower() }}</strong> with this office ({{ exc_config.example }}). {{ exc_config.evidence_label }} as a PDF, JPG, or PNG.</div>
+  <form method="POST" enctype="multipart/form-data" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      <label>{{ exc_config.evidence_label }}</label>
+      {{ form.receipt(class="form-control") }}
+      {% for e in form.receipt.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+    </div>
+    <div style="display:flex;gap:10px;">
+      {{ form.submit(class="btn btn-primary") }}
+      <a class="btn btn-outline" href="{{ url_for('student.dashboard') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

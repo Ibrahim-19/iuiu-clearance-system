@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}{{ student.name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>{{ student.name }}</h1>
+  <p>{{ student.reg_number }} &middot; {{ student.email }} &middot; {{ student.course_name }}</p>
+</div>
+
+{% if request_obj %}
+<div class="card">
+  <div class="flex-between">
+    <div><strong>Tracking Reference:</strong> {{ request_obj.tracking_code }}
+      <span class="badge badge-{{ request_obj.status }}">{{ request_obj.status.replace('_',' ') }}</span>
+    </div>
+    {% if request_obj.status == 'fully_cleared' %}
+      <span class="badge badge-approved"><i class="fa-solid fa-graduation-cap"></i> Certificate Issued</span>
+    {% endif %}
+  </div>
+  <div class="progress-track"><div class="progress-fill" style="width:{{ request_obj.progress_percent }}%;"></div></div>
+</div>
+
+<div class="card table-wrap">
+  <table>
+    <thead><tr><th>Department</th><th>Type</th><th>Status</th><th>Reviewed</th><th></th></tr></thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.department.name }}</td>
+        <td>{{ 'Receipt' if item.has_debt else 'Checkbox' }}</td>
+        <td><span class="badge badge-{{ item.status }}">{{ item.status.replace('_',' ') }}</span>
+          {% if item.status == 'rejected' %}<div class="form-text">{{ item.rejection_reason }}</div>{% endif %}
+        </td>
+        <td>{{ item.reviewed_at.strftime('%d %b %Y') if item.reviewed_at else '—' }}</td>
+        <td>
+          {% if item.status != 'approved' %}
+          <form method="POST" action="{{ url_for('registrar.override_approve', item_id=item.id) }}" onsubmit="return confirm('Force-approve this department on behalf of the office?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-outline btn-sm" type="submit">Override Approve</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state">This student has not started the clearance process yet.</div>
+{% endif %}
+
+<a class="btn btn-outline" href="{{ url_for('registrar.students') }}"><i class="fa-solid fa-arrow-left"></i> Back to Graduation List</a>
+{% endblock %}

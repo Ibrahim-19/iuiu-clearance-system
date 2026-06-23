@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Registrar Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Registrar Overview</h1>
+  <p>Master view of the graduation clearance cycle across all 5 offices.</p>
+</div>
+
+<div class="grid grid-3">
+  <div class="card stat-card"><div class="stat-value">{{ total_students }}</div><div class="stat-label">Registered Students</div></div>
+  <div class="card stat-card"><div class="stat-value">{{ whitelist_count }}</div><div class="stat-label">Active Finalists Listed</div></div>
+  <div class="card stat-card"><div class="stat-value">{{ in_progress }}</div><div class="stat-label">Clearance In Progress</div></div>
+  <div class="card stat-card"><div class="stat-value">{{ fully_cleared }}</div><div class="stat-label"><i class="fa-solid fa-graduation-cap"></i> Fully Cleared</div></div>
+</div>
+
+<div class="page-header"><h1 style="font-size:18px;">Departments at a Glance</h1></div>
+<div class="grid grid-2">
+  {% for d in dept_stats %}
+  <div class="card">
+    <h3 style="margin:0 0 10px;">{{ d.name }}</h3>
+    <div style="display:flex;gap:18px;">
+      <div><div class="stat-value" style="font-size:20px;">{{ d.pending }}</div><div class="stat-label">Pending</div></div>
+      <div><div class="stat-value" style="font-size:20px;color:#1e7b34;">{{ d.approved }}</div><div class="stat-label">Approved</div></div>
+      <div><div class="stat-value" style="font-size:20px;color:#c0392b;">{{ d.rejected }}</div><div class="stat-label">Rejected</div></div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

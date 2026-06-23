@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}{{ exc_config.noun }} Ledger{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>{{ exc_config.noun }} Ledger — {{ current_user.department.name }}</h1>
+  <p>
+    Records here determine whether a student sees a checkbox or a proof-upload field.
+    {% if exc_config.example %}<br><span class="form-text">{{ exc_config.example }}</span>{% endif %}
+  </p>
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3 style="margin-top:0;">Bulk Import (CSV)</h3>
+    <p class="form-text">
+      Columns: reg_number, reason{% if exc_config.is_monetary %}, amount{% endif %}
+    </p>
+    <form method="POST" enctype="multipart/form-data" novalidate>
+      {{ upload_form.hidden_tag() }}
+      <div class="form-group">
+        {{ upload_form.csv_file(class="form-control") }}
+        {% for e in upload_form.csv_file.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      {{ upload_form.submit(class="btn btn-primary") }}
+    </form>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Add Single Record</h3>
+    <form method="POST" novalidate>
+      {{ add_form.hidden_tag() }}
+      <div class="form-group">
+        {{ add_form.reg_number.label }}
+        {{ add_form.reg_number(class="form-control") }}
+        {% for e in add_form.reg_number.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      {% if exc_config.is_monetary %}
+      <div class="form-group">
+        {{ add_form.amount.label }}
+        {{ add_form.amount(class="form-control") }}
+        {% for e in add_form.amount.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      {% else %}
+        {{ add_form.amount(style="display:none;") }}
+      {% endif %}
+      <div class="form-group">
+        <label>{{ exc_config.noun }} — Description</label>
+        {{ add_form.reason(class="form-control", placeholder=exc_config.example) }}
+        {% for e in add_form.reason.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      {{ add_form.submit(class="btn btn-primary") }}
+    </form>
+  </div>
+</div>
+
+<input type="text" id="liveSearch" class="form-control" placeholder="Search records..." style="margin-bottom:14px;">
+
+<div class="card table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Reg No.</th>
+        {% if exc_config.is_monetary %}<th>Amount (UGX)</th>{% endif %}
+        <th>{{ exc_config.noun }}</th>
+        <th>Status</th>
+        <th>Added</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr data-search-row>
+        <td>{{ r.reg_number }}</td>
+        {% if exc_config.is_monetary %}<td>{{ "{:,.0f}".format(r.amount) }}</td>{% endif %}
+        <td>{{ r.reason }}</td>
+        <td><span class="badge {{ 'badge-approved' if r.is_settled else 'badge-pending' }}">{{ 'Resolved' if r.is_settled else 'Outstanding' }}</span></td>
+        <td>{{ r.created_at.strftime('%d %b %Y') }}</td>
+        <td>
+          {% if not r.is_settled %}
+          <form method="POST" action="{{ url_for('admin.settle_debt', debt_id=r.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-outline btn-sm" type="submit">Mark Resolved</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="{{ 5 if exc_config.is_monetary else 4 }}"><div class="empty-state">No records yet.</div></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

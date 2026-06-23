@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Review Queue{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Review Queue</h1>
+  <p>Students who have submitted clearance for {{ current_user.department.name }}.</p>
+</div>
+
+<form class="search-bar" method="GET">
+  <input type="text" name="q" class="form-control" placeholder="Search by name or reg number..." value="{{ q }}">
+  <select name="status" class="form-control">
+    <option value="">All Statuses</option>
+    <option value="pending" {{ 'selected' if status == 'pending' }}><i class="fa-solid fa-hourglass-half"></i> Pending</option>
+    <option value="approved" {{ 'selected' if status == 'approved' }}><i class="fa-solid fa-circle-check"></i> Approved</option>
+    <option value="rejected" {{ 'selected' if status == 'rejected' }}><i class="fa-solid fa-circle-xmark"></i> Rejected</option>
+  </select>
+  <button class="btn btn-primary" type="submit">Filter</button>
+</form>
+
+<div class="card table-wrap">
+  <table>
+    <thead>
+      <tr><th>Student</th><th>Reg No.</th><th>Type</th><th>Status</th><th>Submitted</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr data-search-row>
+        <td>{{ item.request.student.name }}</td>
+        <td>{{ item.request.student.reg_number }}</td>
+        <td>{{ 'Receipt' if item.has_debt else 'Checkbox' }}</td>
+        <td><span class="badge badge-{{ item.status }}">{{ item.status.replace('_',' ') }}</span></td>
+        <td>{{ item.submitted_at.strftime('%d %b %Y') if item.submitted_at else '—' }}</td>
+        <td><a class="btn btn-outline btn-sm" href="{{ url_for('admin.view_item', item_id=item.id) }}">Review</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6"><div class="empty-state">No submissions match your filters.</div></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

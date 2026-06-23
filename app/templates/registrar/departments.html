@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Departments{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Campus Clearance Departments</h1>
+  <p>The 5 offices every finalist must clear with before graduation.</p>
+</div>
+
+{% for d in departments %}
+<div class="dept-item">
+  <div>
+    <div class="dept-name">{{ loop.index }}. {{ d.name }}</div>
+    <div class="dept-desc">{{ d.description }}</div>
+  </div>
+  <div>{{ d.admins|length }} admin account(s)</div>
+</div>
+{% endfor %}
+{% endblock %}

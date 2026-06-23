@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Verification</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/fontawesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/solid.min.css') }}">
+</head>
+<body style="background:#f4f6fa;">
+  <div style="max-width:480px;margin:60px auto;padding:0 16px;">
+    <div class="card" style="text-align:center;">
+      {% if valid %}
+        <div style="font-size:42px;"><i class="fa-solid fa-circle-check"></i></div>
+        <h2 style="color:#1e7b34;margin:10px 0 4px;">Certificate Verified</h2>
+        <p style="color:#5b6473;">This clearance certificate is authentic and was issued by the IUIU Arua Campus Online Clearance System.</p>
+        <hr style="border:none;border-top:1px solid #e2e6ec;margin:18px 0;">
+        <p><strong>Student:</strong> {{ request_obj.student.name }}</p>
+        <p><strong>Registration Number:</strong> {{ request_obj.student.reg_number }}</p>
+        <p><strong>Tracking Reference:</strong> {{ request_obj.tracking_code }}</p>
+        <p><strong>Cleared On:</strong> {{ request_obj.fully_cleared_at.strftime('%d %B %Y') if request_obj.fully_cleared_at else '-' }}</p>
+      {% else %}
+        <div style="font-size:42px;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h2 style="color:#c0392b;margin:10px 0 4px;">Invalid or Unverified Certificate</h2>
+        <p style="color:#5b6473;">We could not verify this certificate. It may be forged, expired, or the student has not yet completed clearance.</p>
+      {% endif %}
+    </div>
+  </div>
+  <footer class="site-footer">
+    &copy; {{ current_year }} IUIU Arua Campus Online Clearance System. All rights reserved.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Finalist Whitelist{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Finalist Enrollment Whitelist</h1>
+  <p>Only registration numbers listed and active here can register or log in to the system.</p>
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <h3 style="margin-top:0;">Bulk Import (CSV)</h3>
+    <p class="form-text">Columns: reg_number, student_name, course_type, admission_year</p>
+    <form method="POST" enctype="multipart/form-data" novalidate>
+      {{ upload_form.hidden_tag() }}
+      <div class="form-group">
+        {{ upload_form.csv_file(class="form-control") }}
+        {% for e in upload_form.csv_file.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      {{ upload_form.submit(class="btn btn-primary") }}
+    </form>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0;">Add Single Finalist</h3>
+    <form method="POST" novalidate>
+      {{ add_form.hidden_tag() }}
+      <div class="form-group">
+        {{ add_form.reg_number.label }}
+        {{ add_form.reg_number(class="form-control") }}
+        {% for e in add_form.reg_number.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="form-group">
+        {{ add_form.student_name.label }}
+        {{ add_form.student_name(class="form-control") }}
+      </div>
+      <div class="grid grid-2">
+        <div class="form-group">
+          {{ add_form.course_type.label }}
+          {{ add_form.course_type(class="form-control") }}
+        </div>
+        <div class="form-group">
+          {{ add_form.admission_year.label }}
+          {{ add_form.admission_year(class="form-control") }}
+        </div>
+      </div>
+      {{ add_form.submit(class="btn btn-primary") }}
+    </form>
+  </div>
+</div>
+
+<form class="search-bar" method="GET">
+  <input type="text" name="q" class="form-control" placeholder="Search by reg number or name..." value="{{ q }}">
+  <button class="btn btn-primary" type="submit">Search</button>
+</form>
+
+<div class="card table-wrap">
+  <table>
+    <thead><tr><th>Reg No.</th><th>Name</th><th>Course Type</th><th>Admission Year</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for e in entries %}
+      <tr>
+        <td>{{ e.reg_number }}</td>
+        <td>{{ e.student_name or '—' }}</td>
+        <td>{{ e.course_type or '—' }}</td>
+        <td>{{ e.admission_year or '—' }}</td>
+        <td><span class="badge {{ 'badge-approved' if e.is_active else 'badge-rejected' }}">{{ 'Active' if e.is_active else 'Inactive' }}</span></td>
+        <td>
+          <form method="POST" action="{{ url_for('registrar.toggle_finalist', entry_id=e.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-outline btn-sm" type="submit">{{ 'Deactivate' if e.is_active else 'Activate' }}</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6"><div class="empty-state">No finalist records found.</div></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
