@@ -30,6 +30,17 @@ def _guard():
 @student_bp.route("/dashboard")
 def dashboard():
     req = get_or_create_active_request(current_user)
+    # Safety net: the request's overall status is normally flipped to
+    # "fully_cleared" the moment the last department approves an item
+    # (see admin.approve_item / registrar.override_approve). If that check
+    # ever gets missed -- a race condition, a server restart mid-request,
+    # anything -- the student would otherwise be stuck seeing "Submitted"
+    # forever with no way to trigger a re-check, since the certificate
+    # button only renders once status is actually "fully_cleared". Re-running
+    # the check here on every dashboard load makes that self-correcting:
+    # it's a no-op once status is already correct, and only ever moves
+    # status forward (draft/submitted -> fully_cleared), never backward.
+    check_request_fully_cleared(req)
     items = (
         ClearanceItem.query.filter_by(request_id=req.id)
         .join(Department)
@@ -94,7 +105,7 @@ def clearance_item(item_id):
 
         notify_department_admins(
             item.department_id,
-            f"New pending clearance request waiting for audit from student {current_user.reg_number}.",
+            f"New pending clearance folder waiting for audit from student {current_user.reg_number}.",
             link=url_for("admin.queue"),
         )
         flash(f"Submitted to {item.department.name} for review.", "success")
@@ -185,4 +196,3 @@ def download_certificate(request_id):
     from flask import current_app
     cert_dir = os.path.abspath(os.path.join(current_app.config["UPLOAD_FOLDER"], "..", "certificates"))
     return send_from_directory(cert_dir, req.certificate_filename, as_attachment=True)
-
