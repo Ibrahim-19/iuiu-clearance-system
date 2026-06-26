@@ -13,8 +13,8 @@
     <div class="card" style="text-align:center;">
       {% if valid %}
         <div style="font-size:42px;"><i class="fa-solid fa-circle-check"></i></div>
-        <h2 style="color:#1e7b34;margin:10px 0 4px;">Certificate Verified</h2>
-        <p style="color:#5b6473;">This clearance certificate is authentic and was issued by the IUIU Arua Campus Online Clearance System.</p>
+        <h2 style="color:#1e7b34;margin:10px 0 4px;">Form Verified</h2>
+        <p style="color:#5b6473;">This clearance form is authentic and was issued by the IUIU Arua Campus Online Clearance System.</p>
         <hr style="border:none;border-top:1px solid #e2e6ec;margin:18px 0;">
         <p><strong>Student:</strong> {{ request_obj.student.name }}</p>
         <p><strong>Registration Number:</strong> {{ request_obj.student.reg_number }}</p>
@@ -22,8 +22,8 @@
         <p><strong>Cleared On:</strong> {{ request_obj.fully_cleared_at.strftime('%d %B %Y') if request_obj.fully_cleared_at else '-' }}</p>
       {% else %}
         <div style="font-size:42px;"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <h2 style="color:#c0392b;margin:10px 0 4px;">Invalid or Unverified Certificate</h2>
-        <p style="color:#5b6473;">We could not verify this certificate. It may be forged, expired, or the student has not yet completed clearance.</p>
+        <h2 style="color:#c0392b;margin:10px 0 4px;">Invalid or Unverified form</h2>
+        <p style="color:#5b6473;">We could not verify this form. It may be forged, expired, or the student has not yet completed clearance.</p>
       {% endif %}
     </div>
   </div>

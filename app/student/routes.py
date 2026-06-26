@@ -158,7 +158,7 @@ def certificate(request_id):
     if req.student_id != current_user.id:
         abort(403)
     if not check_request_fully_cleared(req):
-        flash("Your certificate will be available once all 5 departments approve your clearance.", "info")
+        flash("Your form will be available once all 5 departments approve your clearance.", "info")
         return redirect(url_for("student.dashboard"))
 
     if not req.certificate_generated or not req.certificate_filename:
