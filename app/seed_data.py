@@ -11,16 +11,16 @@ an existence check first.
 from app.extensions import db
 from app.models import User, Department, FinalistWhitelist
 
-REGISTRAR_EMAIL = "iuiu.registrar@gmail.com"
-REGISTRAR_PASSWORD = "ChangeMe123!"
+REGISTRAR_EMAIL = "registrar@gmail.com"
+REGISTRAR_PASSWORD = "12345678"
 
-ADMIN_PASSWORD = "Admin123!"
+ADMIN_PASSWORD = "12345678"
 ADMIN_EMAILS = {
-    "faculty_dean": "iuiu.facultydean@gmail.com",
-    "bursar": "iuiu.bursar@gmail.com",
-    "library": "iuiu.library@gmail.com",
-    "dean_of_students": "iuiu.deanofstudents@gmail.com",
-    "ict": "iuiu.ict@gmail.com",
+    "faculty_dean": "facultydean@gmail.com",
+    "bursar": "bursar@gmail.com",
+    "library": "library@gmail.com",
+    "dean_of_students": "deanofstudents@gmail.com",
+    "ict": "ict@gmail.com",
 }
 
 DEMO_FINALIST_REG = "220-067432-19874"
@@ -60,7 +60,7 @@ def run_seed(create_demo_finalist=True, verbose=True):
     if create_demo_finalist and not FinalistWhitelist.query.filter_by(reg_number=DEMO_FINALIST_REG).first():
         db.session.add(FinalistWhitelist(
             reg_number=DEMO_FINALIST_REG,
-            student_name="Demo Student",
+            student_name="Mosema Rashid",
             course_type="bachelors",
             admission_year=2023,
             added_by="seed script",
