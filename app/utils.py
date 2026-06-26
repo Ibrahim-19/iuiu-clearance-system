@@ -70,7 +70,7 @@ def check_finalist_eligibility(reg_number, admission_year=None, course_type=None
     if not entry:
         return {
             "allowed": False,
-            "reason": "Error: Profile not active on the graduation cohort list.",
+            "reason": "Error: Profile not active on the graduation list.",
             "expected_grad_year": None,
         }
 
