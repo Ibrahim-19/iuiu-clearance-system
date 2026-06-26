@@ -94,7 +94,7 @@ def clearance_item(item_id):
 
         notify_department_admins(
             item.department_id,
-            f"New pending clearance folder waiting for audit from student {current_user.reg_number}.",
+            f"New pending clearance request waiting for audit from student {current_user.reg_number}.",
             link=url_for("admin.queue"),
         )
         flash(f"Submitted to {item.department.name} for review.", "success")

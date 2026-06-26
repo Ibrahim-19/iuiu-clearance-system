@@ -71,7 +71,7 @@ def generate_certificate_pdf_bytes(student, clearance_request, departments_statu
     # Title
     c.setFillColor(TEXT_DARK)
     c.setFont("Helvetica-Bold", 20)
-    c.drawCentredString(width / 2, height - 68 * mm, "CERTIFICATE OF CLEARANCE")
+    c.drawCentredString(width / 2, height - 68 * mm, "GRADUATION CLEARANCE FORM")
 
     # Body text
     c.setFont("Helvetica", 12)
