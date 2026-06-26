@@ -30,13 +30,11 @@
         <div class="form-group">
           {{ form.email.label }}
           {{ form.email(class="form-control", placeholder="you@gmail.com") }}
-          <div class="form-text">Gmail addresses only.</div>
           {% for e in form.email.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
         </div>
         <div class="form-group">
           {{ form.reg_number.label }}
           {{ form.reg_number(class="form-control") }}
-          <div class="form-text">Format: xxx-xxxxxx-xxxxx</div>
           {% for e in form.reg_number.errors %}<div class="form-error">{{ e }}</div>{% endfor %}
         </div>
         <div class="grid grid-2">
